@@ -52,6 +52,7 @@ void GameManager::initGame() {
 	// 5. Reset the rest of the game:
 	inTurn = &white;
 	turnNum = 1;
+	lastCapture = 0;
 	checkmate = false;
 	stalemate = false;
 	moves.clear();
@@ -451,6 +452,17 @@ void GameManager::finalizeGameState(MoveAnalysisResults& results) {
 	}
 	else if (check)
 		results.checkMove = true;
+
+	if (results.capt) {
+		lastCapture == 0;
+	}
+	else lastCapture++;
+
+	if (lastCapture > 100 && !checkmate)
+	{
+		stalemate = true;
+		lastMsg = "Stalemate by 50 consequtive moves with no capture.";
+	}
 
 	mParser.addSpecialNotation(results);
 	

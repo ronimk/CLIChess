@@ -36,6 +36,7 @@ private:
 	std::string blackName;
 
 	int turnNum;
+	int lastCapture;
 	bool checkmate;
 	bool stalemate;
 
