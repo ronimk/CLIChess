@@ -63,8 +63,10 @@ int main()
 
 		case (CLICommand::Save):
 			if (gameOngoing) {
-				if(gm.save(userInput.substr(2, std::string::npos)))
-					std::cout << "Save successful" << std::endl;
+				if (gm.save(userInput.substr(2, std::string::npos))) {
+					std::cout << "Save successful";
+					printBoardFrame();
+				}
 				else {
 					std::cout << "An unexpected system error occured:" << std::endl;
 					std::cout << gm.getMsg() << std::endl;
@@ -79,7 +81,8 @@ int main()
 			gameOngoing = true;
 			if (gm.load(userInput.substr(2, std::string::npos))) {
 				clearScreen();
-				std::cout << "Finished loading." << std::endl;
+				std::cout << "Finished loading.";
+				printBoardFrame();
 			}
 			else {
 				std::cout << "An unexpected system error occured:" << std::endl;
@@ -148,7 +151,8 @@ int main()
 			break;
 
 		case (CLICommand::UNK):
-			std::cout << "Unknown command." << std::endl;
+			std::cout << "Unknown command.";
+			printBoardFrame();
 			break;
 		}
 	}
