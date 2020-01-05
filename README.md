@@ -18,7 +18,7 @@ l filename - loads the file with the given filename.<br>
 <br>
 Two additional commands can be given during a chess game:<br>
 s filename - saves the current game into a file with the given file name.<br>
-t # - takes back a user specified amount of moves; for example t5, takes back 5 moves.
+t # - takes back a user specified amount of moves; for example "t 5" takes back 5 moves.
 <br>
 <br>
 During the game, the user inputs moves in the algebraic chess notation, EXCEPT:<br>
