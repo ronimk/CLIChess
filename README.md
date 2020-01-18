@@ -7,7 +7,6 @@ Tested with Microsoft Visual Studio Community 2019
 <br>
 TODO:
 <br>
-<br>
 Update and upload the project documentation
 <br>
 <br>
