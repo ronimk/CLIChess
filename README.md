@@ -65,9 +65,10 @@ chess program usable for any chess player to practice on (that's why there exist
 as many moves as the user likes, for example).
 <br>
 <br>
-This decision, however, made the handling of those special moves a bit messy at certain areas. For example,
-the castling and the promotion had to be handled separately and in a very different manner from the analysis
-of normal moves.
+This, however, made the handling of the special moves a bit messy. For example, the castling and the promotion
+had to be handled separately and in a very different manner from the analysis of normal moves, which complicated
+the GameManager quite a lot. On the other had, since the move rules of chess are very heterogenous, they
+will complicate a program design anyway.
 <br>
 <br>
 The MoveAnalysisResults-ds with a purely public interface was designed for easy passing of any relevant
