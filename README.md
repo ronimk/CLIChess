@@ -46,3 +46,29 @@ weird or counter-intuitive to the users.
 <br>
 <br>
 4. No stalemate after three identical board states implemented. However, all the other chess rules are implemented.
+<br>
+<br>
+A note about the source code:
+<br>
+<br>
+The original project requirements did not include any special moves (En Passants, Castling or Promotions).
+Therefore my first idea was to focus mainly on the parsing of the moves given in the algebraic chess notation
+form. Once I had gotten all the basic moves done, I felt that I wanted to try more: I wanted to make a real
+chess program usable for any chess player to practice on (that's why there exists the possibility to take back
+as many moves as the user likes, for example).
+<br>
+<br>
+This decision, however, made the handling of those special moves a bit messy at certain areas. For example,
+the castling and the promotion had to be handled separately and in a very different manner from the analysis
+of normal moves.
+<br>
+<br>
+The MoveAnalysisResults-ds with a purely public interface was designed for easy passing of any relevant
+information between the parser, the move validator and the actual move maker. It (and some other parts of
+the program) may not exactly follow the best OO practices, but it's a very convenient and performs its duty
+very well.
+<br>
+<br>
+There are still two or three "problem areas" in the code that are desperately in need of refactoring (like changing
+the parser into a state machine instead of the current "ad hoc" solution, but overall, I'm very satisfied with the
+results.
