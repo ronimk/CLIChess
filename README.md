@@ -26,7 +26,7 @@ m - prints the main menu
 <br>
 Three additional commands can be given during a chess game: (typable only into "... to move:" prompt):<br>
 s filename - saves the current game into a file with the given file name.<br>
-t # - takes back a user specified amount of moves; for example "t 5" takes back 5 moves.
+t # - takes back a user specified amount of moves; for example "t 5" takes back 5 moves. <br>
 b - prints the gameboard.
 <br>
 <br>
