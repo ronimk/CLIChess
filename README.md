@@ -5,6 +5,12 @@
 Tested with Microsoft Visual Studio Community 2019
 <br>
 <br>
+TODO:
+<br>
+<br>
+Update and upload the project documentation
+<br>
+<br>
 Due to the console-specific printing routines, the game is not portable to non-Windows platforms. 
 (these routines are in the CLIChess.cpp clearScreen function and in the GameManager.cpp
 printBoard-method)
