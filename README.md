@@ -59,7 +59,7 @@ A note about the source code:
 <br>
 <br>
 The original project requirements did not include any special moves (En Passants, Castling or Promotions).
-Therefore my first idea was to focus mainly on the parsing of the moves given in the algebraic chess notation
+Therefore my first idea was to focus mainly on the parsing and analysis of the moves given in the algebraic
 form. Once I had gotten all the basic moves done, I felt that I wanted to try more: I wanted to make a real
 chess program usable for any chess player to practice on (that's why there exists the possibility to take back
 as many moves as the user likes, for example).
