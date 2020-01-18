@@ -5,20 +5,22 @@
 Tested with Microsoft Visual Studio Community 2019
 <br>
 <br>
-Due to the console-specific printing routines, not portable to non-Windows platforms. 
-(these routines are in the CLIChess.cpp ClearScreen function and the GameManager.cpp
+Due to the console-specific printing routines, the game is not portable to non-Windows platforms. 
+(these routines are in the CLIChess.cpp clearScreen function and in the GameManager.cpp
 printBoard-method)
 <br>
 <br>
-Supports the following commands (typed into the "[CLIChess] >" prompt):<br>
+Supports the following commands (typable either into the "[CLIChess] >" or the "... to move:" prompt):<br>
 n - starts a new game.<br>
 q - quits the program.<br>
 l filename - loads the file with the given filename.<br>
+m - prints the main menu
 <br>
 <br>
-Two additional commands can be given during a chess game:<br>
+Three additional commands can be given during a chess game: (typable only into "... to move:" prompt):<br>
 s filename - saves the current game into a file with the given file name.<br>
 t # - takes back a user specified amount of moves; for example "t 5" takes back 5 moves.
+b - prints the gameboard.
 <br>
 <br>
 During the game, the user inputs moves in the algebraic chess notation, EXCEPT:<br>
@@ -43,4 +45,4 @@ with no further processing performed afterwards), there are probably certain err
 weird or counter-intuitive to the users.
 <br>
 <br>
-4. No stalemate after three identical board states implemented.
+4. No stalemate after three identical board states implemented. However, all the other chess rules are implemented.

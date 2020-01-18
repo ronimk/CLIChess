@@ -3,12 +3,11 @@
 #include "GameManager.h"
 #include "CLIChessExceptions.h"
 
-enum class CLICommand {NewGame, Quit, Save, Load, Move, TakeBack, UNK};
+enum class CLICommand {NewGame, Quit, Save, Load, Move, ShowBoard, ShowMenu, TakeBack, UNK};
 
 CLICommand getCommand(const std::string& cmd);
 bool promptForYesNo(std::string promptMsg);
 
-void printBoardFrame();
 void printStartInfo();
 void printMainMenu();
 void printGameStartMenu();
@@ -24,7 +23,10 @@ int main()
 	GameManager gm;
 	bool quitGame = false;
 	bool gameOngoing = false;
+	bool printBoard = true;
 
+	const std::string emptyFrameMsg = "\n\n\n";
+	std::string boardFrameMsg;
 	std::string userInput;
 
 	printStartInfo();
@@ -36,25 +38,32 @@ int main()
 	while (!quitGame) {
 		// 1. Print the proper input prompt:
 		if (gameOngoing) {
-			gm.printBoard();
+			if (printBoard) {
+				clearScreen();
+				std::cout << boardFrameMsg;
+				gm.printBoard();
+			}
+			else
+				printBoard = true;
+
 			std::cout << gm.inTurnPlayer() + " to move: ";
 		}
-		else
+		else {
+			std::cout << boardFrameMsg;
 			std::cout << "[CLIChess] >> ";
+		}
 
 		// 2. Handle the user input: 
 		std::getline(std::cin, userInput);
-		// The clearScreen -call ensures a nice, consistent view of the board and no text flooding:
-		clearScreen();
 
 		switch (getCommand(userInput)) {
 
 		case (CLICommand::NewGame):
 			gm.restart();
-			if (gameOngoing == false) {
+			if (gameOngoing == false)
 				gameOngoing = true;
-			}
-			printBoardFrame();
+
+			boardFrameMsg = emptyFrameMsg;
 			break;
 
 		case (CLICommand::Quit):
@@ -63,53 +72,46 @@ int main()
 
 		case (CLICommand::Save):
 			if (gameOngoing) {
-				if (gm.save(userInput.substr(2, std::string::npos))) {
-					std::cout << "Save successful";
-					printBoardFrame();
-				}
-				else {
-					std::cout << "An unexpected system error occured:" << std::endl;
-					std::cout << gm.getMsg() << std::endl;
-					std::cout << "The operation was not performed." << std::endl;
-				}
+				if (gm.save(userInput.substr(2, std::string::npos)))
+					boardFrameMsg = "Save successful\n\n\n";
+				else
+					boardFrameMsg = "An unexpected system error occured:\n" +
+									gm.getMsg() +
+									"\nThe operation was not performed.\n";
 			}
 			else
-				std::cout << "No ongoing game. Saving not possible." << std::endl;
+				boardFrameMsg = "No ongoing game. Saving not possible.\n";
 			break;
 
 		case (CLICommand::Load):
-			gameOngoing = true;
 			if (gm.load(userInput.substr(2, std::string::npos))) {
-				clearScreen();
-				std::cout << "Finished loading.";
-				printBoardFrame();
+				gameOngoing = true;
+				boardFrameMsg = "Finished loading.\n\n\n";
 			}
-			else {
-				std::cout << "An unexpected system error occured:" << std::endl;
-				std::cout << gm.getMsg() << std::endl;
-				std::cout << "The operation was not performed completely." << std::endl;
-			}
+			else
+				boardFrameMsg = "An unexpected system error occured:\n" +
+								gm.getMsg() +
+								"\nThe operation was not performed completely.\n";
 			break;
 
 		case (CLICommand::Move):
 			if (gameOngoing) {
-				if (!gm.makeMove(userInput)) {
-					std::cout << "The move could not be made:" << std::endl;
-					std::cout << gm.getMsg() << std::endl;
-					std::cout << std::endl;
-				}
-				else printBoardFrame();
-
-				if (gm.isCheckmate() || gm.isStalemate()) {
+				if (!gm.makeMove(userInput))
+					boardFrameMsg = "The move could not be made:\n" +
+									gm.getMsg() +
+									"\n\n";
+				else if (gm.isCheckmate() || gm.isStalemate()) {
+					clearScreen();
+					std::cout << emptyFrameMsg;
 					gm.printBoard();
-					std::cout << "The game ended.";
+					std::cout << "The game ended. ";
 					std::cout << gm.getMsg() << std::endl;
 					gameOngoing = false;
 
 					if (promptForYesNo("Would you like to save the game notation in a readable format? [y/n]: ")) {
 						bool success = false;
 
-						while (!success){
+						while (!success) {
 							std::cout << "Enter the save file name: ";
 							std::getline(std::cin, userInput);
 							if (gm.save(userInput)) {
@@ -124,35 +126,53 @@ int main()
 						}
 					}
 				}
+				else boardFrameMsg = emptyFrameMsg;
 			}
+			else
+				boardFrameMsg = "Unknown command" + emptyFrameMsg;
+
 			break;
 
 		case (CLICommand::TakeBack):
 			if (gameOngoing) {
 				try {
-					if (gm.takeBack(std::stoi(userInput.substr(2, std::string::npos)))) {
-						std::cout << "Takeback successful";
-						printBoardFrame();
-					}
-					else {
-						std::cout << "An error occured:" << std::endl;
-						std::cout << gm.getMsg() << std::endl;
-						std::cout << "The operation was not performed." << std::endl;
-					}
+					if (gm.takeBack(std::stoi(userInput.substr(2, std::string::npos))))
+						boardFrameMsg = "Takeback successful" + emptyFrameMsg;
+					else
+						boardFrameMsg = "An error occured:\n" +
+						gm.getMsg() +
+						"\nThe operation was not performed\n";
 				}
 				catch (std::logic_error e) {
-					std::cout << "PARSE ERROR" << std::endl;
-					std::cout << "[ " + userInput + "]:" << std::endl;
-					std::cout << "Could not parse the given number of takebacks." << std::endl;
+					boardFrameMsg = "PARSE ERROR\n[" +
+									userInput + "]: Could not parse the given number of takebacks.\n\n";
 				}
 			}
 			else
-				std::cout << "No ongoing game. Taking back not possible." << std::endl;
+				boardFrameMsg = "No ongoing game. Taking back not possible.\n";
+
+			break;
+
+		case (CLICommand::ShowBoard):
+			if (!gameOngoing)
+				boardFrameMsg = "No ongoing game. Showing board not possible.\n";
+			else
+				boardFrameMsg = emptyFrameMsg;
+			break;
+
+		case (CLICommand::ShowMenu):
+			clearScreen();
+			printMainMenu();
+			printGameStartMenu();
+			boardFrameMsg = "";
+
+			if (gameOngoing)
+				printBoard = false;
+
 			break;
 
 		case (CLICommand::UNK):
-			std::cout << "Unknown command.";
-			printBoardFrame();
+			boardFrameMsg = "Unknown command" + emptyFrameMsg;
 			break;
 		}
 	}
@@ -164,7 +184,7 @@ int main()
 // Returns the type of the user inputted command.
 //
 CLICommand getCommand(const std::string& cmd) {
-	int len = cmd.size();
+	size_t len = cmd.size();
 	if (len == 0)
 		return CLICommand::UNK;
 
@@ -199,7 +219,19 @@ CLICommand getCommand(const std::string& cmd) {
 				return CLICommand::Load;
 			else
 				return CLICommand::UNK;
+
+		case('m'):
+			if (len == 1)
+				return CLICommand::ShowMenu;
+			else
+				return CLICommand::UNK;
 		
+		case('b'):
+			if (len == 1)
+				return CLICommand::ShowBoard;
+			else
+				return CLICommand::Move;
+
 		default:
 			return CLICommand::Move;
 	}
@@ -226,10 +258,6 @@ bool promptForYesNo(std::string promptMsg) {
 	}
 }
 
-void printBoardFrame() {
-	std::cout << std::endl << std::endl << std::endl;
-}
-
 void printStartInfo() {
 	std::cout << "Welcome to CLIChess!" << std::endl;
 	std::cout << "CLIChess is a two player chess program." << std::endl;
@@ -246,6 +274,8 @@ void printMainMenu() {
 	std::cout << "n : starts a new game" << std::endl;
 	std::cout << "q : quits CLIChess" << std::endl;
 	std::cout << "l file: loads a game from the given file" << std::endl;
+	std::cout << "m : shows this menu." << std::endl;
+	std::cout << "b : shows the board." << std::endl;
 	std::cout << "example: \"l my_file01.clc\" loads the previously saved game from my_file01.clc" << std::endl << std::endl;
 }
 
@@ -256,7 +286,7 @@ void printGameStartMenu() {
 }
 
 void printQuitInfo() {
-	std::cout << "Terminating CLIChess." << std::endl;
+	std::cout << "Terminating CLIChess." << std::endl << std::endl;
 }
 
 // clearScreen: char -> void

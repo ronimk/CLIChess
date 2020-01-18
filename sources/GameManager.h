@@ -29,13 +29,11 @@ private:
 	MoveParser mParser;
 	std::vector<std::string> moves;
 
-	PieceMapper pieceMapper;
-
 	std::string lastMsg;
 	std::string whiteName;
 	std::string blackName;
 
-	int turnNum;
+	size_t turnNum;
 	int lastCapture;
 	bool checkmate;
 	bool stalemate;
@@ -47,7 +45,7 @@ private:
 	int getOpponentDirection(Player *p);
 	bool matchSrcSquare(std::shared_ptr<Piece> p, SquareCoords& coords);
 	void extractMove(MoveAnalysisResults& results);
-	void printMoveLine(std::ostream& out, char separator, int padding, int lineNum) const;
+	void printMoveLine(std::ostream& out, char separator, size_t padding, size_t lineNum) const;
 	void handlePromotion(MoveAnalysisResults& results);
 	bool handleCastling(MoveId mP, bool test=false);
 	bool threatensSquare(const SquareCoords& dest, Player* player);

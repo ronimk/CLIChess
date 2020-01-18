@@ -18,14 +18,16 @@ private:
 	const std::string longCastling = "O-O-O";
 	const std::string files = "abcdefgh";
 	const std::string ranks = "12345678";
+	PieceMapper pieceMapper;
 
 	int fileValue(char file);
 	int rankValue(char rank);
 
 	void stripSpecialNotation(std::string& move);
-	bool promotionMove_p(std::string move);
 
 public:
-	void parseNewMove(MoveAnalysisResults& results, PieceMapper& pieceMapper);
+	MoveParser();
+	void parseNewMove(MoveAnalysisResults& results);
 	void addSpecialNotation(MoveAnalysisResults& results);
+	PieceId mapPiece(const std::string& pieceSymbol);
 };

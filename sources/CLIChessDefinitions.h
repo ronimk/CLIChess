@@ -7,6 +7,7 @@
 
 // MoveId is used to identify the type of the move
 enum class MoveId { NaP, P, R, N, B, Q, K, OO, OOO };
+using PieceId = MoveId;
 // For the special piece moves:
 // NaP: Not a Move, meaning an illegal move
 // OO:  Short Castling

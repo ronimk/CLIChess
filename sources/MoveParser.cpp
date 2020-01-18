@@ -40,11 +40,28 @@ void MoveParser::stripSpecialNotation(std::string& move) {
 // Public methods:
 // ---------------
 
-// ParseNewMove:
+MoveParser::MoveParser() {
+	// Initialize the piece mapper:
+	pieceMapper['R'] = MoveId::R;
+	pieceMapper['N'] = MoveId::N;
+	pieceMapper['B'] = MoveId::B;
+	pieceMapper['Q'] = MoveId::Q;
+	pieceMapper['K'] = MoveId::K;
+	pieceMapper['a'] = MoveId::P;
+	pieceMapper['b'] = MoveId::P;
+	pieceMapper['c'] = MoveId::P;
+	pieceMapper['d'] = MoveId::P;
+	pieceMapper['e'] = MoveId::P;
+	pieceMapper['f'] = MoveId::P;
+	pieceMapper['g'] = MoveId::P;
+	pieceMapper['h'] = MoveId::P;
+}
+
+// ParseNewMove: MoveAnalysisResults -> void
 // Parses the given chess move (given in algebraic notation) and extracts all the information of the move.
 //
 // TODO: change the parser so that it is built around a suitable regexp recognizer.
-void MoveParser::parseNewMove(MoveAnalysisResults& results, PieceMapper& pieceMapper) {
+void MoveParser::parseNewMove(MoveAnalysisResults& results) {
 	std::string& move = results.move;
 
 	// Check for Castling moves:
@@ -70,8 +87,8 @@ void MoveParser::parseNewMove(MoveAnalysisResults& results, PieceMapper& pieceMa
 	// Before processing further, sptrip the move off of any special notations:
 	stripSpecialNotation(move);
 
-	int i = 1;
-	int len = move.length();
+	size_t i = 1;
+	size_t len = move.length();
 
 	if (len < 2)
 		throw ParseException("[" + move + "]: syntax error");
@@ -164,4 +181,14 @@ void MoveParser::addSpecialNotation(MoveAnalysisResults& results) {
 
 	if (results.checkmateMove)
 		results.move += checkmateSymbol;
+}
+
+// mapPiece: pieceSymbol -> MoveId
+// Maps any piece symbol string to the corresponding piece's ID
+// If the given symbol string contains garbage, returns PieceId::NaP
+PieceId MoveParser::mapPiece(const std::string& pieceSymbol) {
+	if (pieceSymbol.size() != 1 || MoveParser::pieceMapper.find(pieceSymbol[0]) == MoveParser::pieceMapper.end())
+		return PieceId::NaP;
+	else
+		return MoveParser::pieceMapper[pieceSymbol[0]];
 }

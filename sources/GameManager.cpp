@@ -193,11 +193,11 @@ void GameManager::extractMove(MoveAnalysisResults& results) {
 // the separator characters will be printed as there is padding left after pushing
 // the whiteMove-representation into the outputStream with AT LEAST one separator
 // character in between the whiteMove and the blackMove string representations.
-void GameManager::printMoveLine(std::ostream& out, char separator, int padding, int lineNum) const {
-	int nextMove = (lineNum - 1) * 2;
+void GameManager::printMoveLine(std::ostream& out, char separator, size_t padding, size_t lineNum) const {
+	size_t nextMove = (lineNum - 1) * 2;
 	out << lineNum << ". ";
 	
-	if ((int)moves.size() > nextMove) {
+	if (moves.size() > nextMove) {
 		std::string next = moves[nextMove];
 		out << next;
 		padding -= next.size();
@@ -206,7 +206,7 @@ void GameManager::printMoveLine(std::ostream& out, char separator, int padding, 
 		} while (--padding > 0);
 
 		nextMove++;
-		if ((int)moves.size() > nextMove)
+		if (moves.size() > nextMove)
 			out << moves[nextMove];
 	}
 	
@@ -224,36 +224,29 @@ void GameManager::handlePromotion(MoveAnalysisResults& results) {
 
 	std::cout << "Your pawn will be promoted! ";
 	while (!success) {
-		if (ans.empty()) {
-			std::cout << "Select the promotion piece (R, N, B, Q): ";
-			std::getline(std::cin, ans);
-		}
+		std::cout << "Select the promotion piece (R, N, B, Q): ";
+		std::getline(std::cin, ans);
 
-		if (pieceMapper.find(ans[0]) == pieceMapper.end()) {
-			std::cout << "[" << ans << "]: illegal piece symbol." << std::endl;
-		}
-		else {
-			switch (pieceMapper[ans[0]]) {
-				case (MoveId::R):
-					newP = std::shared_ptr<Piece>(new Rook(results.dest, inTurn));
-					success = true;
-					break;
-				case (MoveId::N):
-					newP = std::shared_ptr<Piece>(new Knight(results.dest, inTurn));
-					success = true;
-					break;
-				case (MoveId::B):
-					newP = std::shared_ptr<Piece>(new Bishop(results.dest, inTurn));
-					success = true;
-					break;
-				case (MoveId::Q):
-					newP = std::shared_ptr<Piece>(new Queen(results.dest, inTurn));
-					success = true;
-					break;
-				default:
-					std::cout << "Illegal piece promotion." << std::endl;
-					break;
-			}
+		switch (mParser.mapPiece(ans)) {
+			case (PieceId::R):
+				newP = std::shared_ptr<Piece>(new Rook(results.dest, inTurn));
+				success = true;
+				break;
+			case (PieceId::N):
+				newP = std::shared_ptr<Piece>(new Knight(results.dest, inTurn));
+				success = true;
+				break;
+			case (PieceId::B):
+				newP = std::shared_ptr<Piece>(new Bishop(results.dest, inTurn));
+				success = true;
+				break;
+			case (PieceId::Q):
+				newP = std::shared_ptr<Piece>(new Queen(results.dest, inTurn));
+				success = true;
+				break;
+			default:
+				std::cout << "Illegal piece promotion." << std::endl;
+				break;
 		}
 	}
 
@@ -454,7 +447,7 @@ void GameManager::finalizeGameState(MoveAnalysisResults& results) {
 		results.checkMove = true;
 
 	if (results.capt) {
-		lastCapture == 0;
+		lastCapture = 0;
 	}
 	else lastCapture++;
 
@@ -557,21 +550,6 @@ void GameManager::commitMove(MoveAnalysisResults& results) {
 // Public methods:
 // -----------------------------
 GameManager::GameManager() {
-	// Initialize the piece mapper used by both the game manager and the move parser:
-	pieceMapper['R'] = MoveId::R;
-	pieceMapper['N'] = MoveId::N;
-	pieceMapper['B'] = MoveId::B;
-	pieceMapper['Q'] = MoveId::Q;
-	pieceMapper['K'] = MoveId::K;
-	pieceMapper['a'] = MoveId::P;
-	pieceMapper['b'] = MoveId::P;
-	pieceMapper['c'] = MoveId::P;
-	pieceMapper['d'] = MoveId::P;
-	pieceMapper['e'] = MoveId::P;
-	pieceMapper['f'] = MoveId::P;
-	pieceMapper['g'] = MoveId::P;
-	pieceMapper['h'] = MoveId::P;
-
 	lastMsg = "";
 	whiteName = "Red";
 	blackName = "Blue";
@@ -602,7 +580,7 @@ bool GameManager::makeMove(std::string move) {
 
 	// Parse the given move:
 	try {
-		mParser.parseNewMove(results, pieceMapper);
+		mParser.parseNewMove(results);
 		results.opponentDir = getOpponentDirection(inTurn);
 	}
 	catch (ParseException const& e) {
@@ -675,16 +653,18 @@ void GameManager::printBoard() const {
 	static const int middleRow = 3;
 	static const unsigned char whiteSquareColor = 219;
 	static const unsigned char blackSquareColor = ' ';
-	int pmll = rankLim * linesPerRank;
-	int printMoveLines = (std::min<int>)(turnNum, pmll);
+	size_t pmll = rankLim * linesPerRank;
+	size_t printMoveLines = (std::min<size_t>)(turnNum, pmll);
 	
 	unsigned char currSquareColor = whiteSquareColor;
 
 	// A helper macro for switching the current square between white and black:
-    #define switchSquareColor()  if (currSquareColor == whiteSquareColor) \
-	                                 currSquareColor = blackSquareColor;  \
-	                             else                                     \
-		                            currSquareColor = whiteSquareColor;
+	auto switchSquareColor = [](auto& sq) mutable { 
+									if (sq == whiteSquareColor)
+										sq = blackSquareColor;
+									else
+										sq = whiteSquareColor;
+									};
 
 	for (int rank = 7; rank >= 0; rank--) {
 		for (int line = 1; line <= linesPerRank; ++line, --pmll) {
@@ -716,7 +696,7 @@ void GameManager::printBoard() const {
 					else
 						std::cout << currSquareColor;
 				}
-				switchSquareColor()
+				switchSquareColor(currSquareColor);
 			}
 			
 			if (printMoveLines >= pmll) {
@@ -726,7 +706,7 @@ void GameManager::printBoard() const {
 			}
 			std::cout << std::endl;
 		}
-		switchSquareColor()
+		switchSquareColor(currSquareColor);
 	}
 
 	// 3. Print the file labels:
