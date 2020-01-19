@@ -9,7 +9,7 @@ TODO:
 <br>
 Update and upload the project documentation
 <br>
--------------------------------------------
+<hr>
 <br>
 <br>
 Due to the console-specific printing routines, the game is not portable to non-Windows platforms. 
@@ -36,6 +36,7 @@ The user does not have to input check, checkmate, promotion or En Passant moves.
 <br>
 Known issues:
 <br>
+<hr>
 <br>
 1. If the user wants to type special notation (checks, En Passants, etc.), the game only
 recognizes promotion moves and discards the rest of the special notations.
@@ -64,6 +65,7 @@ implement such an error check.
 <br>
 A note about the source code:
 <br>
+<hr>
 <br>
 The original project requirements did not include any special moves (En Passants, Castling or Promotions).
 Therefore my first idea was to focus mainly on the parsing and analysis of the moves given in algebraic chess
