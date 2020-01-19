@@ -33,6 +33,8 @@ b - prints the gameboard.
 During the game, the user inputs moves in the algebraic chess notation, EXCEPT:<br>
 The user does not have to input check, checkmate, promotion or En Passant moves.
 <br>
+-------------------------------------------
+<br>
 <br>
 Known issues:
 <br>
@@ -60,6 +62,8 @@ Removing this issue requires appending the MoveResultsAnalysis a little bit and 
 of all the possible pieces that can make the given move to check whether there are exactly one, or more than one piece that
 can make the given move. I felt this to be troublesome and unnecessary for the purpouses of the program and therefore I did not
 implement such an error check. 
+<br>
+-------------------------------------------
 <br>
 <br>
 A note about the source code:
