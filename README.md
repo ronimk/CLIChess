@@ -55,6 +55,13 @@ weird or counter-intuitive to the users.
 4. No stalemate after three identical board states implemented. However, all the other chess rules are implemented.
 <br>
 <br>
+5. The user can type a move like 1. Nbc3, even when the given extra source square information in the move is unnecessary.
+Removing this issue requires appending the MoveResultsAnalysis a little bit and making an extra check after the initial collecting
+of all the possible pieces that can make the given move to check whether there are exactly one, or more than one piece that
+can make the given move. I felt this to be troublesome and unnecessary for the purpouses of the program and therefore I did not
+implement such an error check. 
+<br>
+<br>
 A note about the source code:
 <br>
 <br>
