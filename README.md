@@ -33,11 +33,10 @@ b - prints the gameboard.
 During the game, the user inputs moves in the algebraic chess notation, EXCEPT:<br>
 The user does not have to input check, checkmate, promotion or En Passant moves.
 <br>
--------------------------------------------
-<br>
 <br>
 Known issues:
 <br>
+-------------------------------------------
 <br>
 1. If the user wants to type special notation (checks, En Passants, etc.), the game only
 recognizes promotion moves and discards the rest of the special notations.
@@ -63,11 +62,10 @@ of all the possible pieces that can make the given move to check whether there a
 can make the given move. I felt this to be troublesome and unnecessary for the purpouses of the program and therefore I did not
 implement such an error check. 
 <br>
--------------------------------------------
-<br>
 <br>
 A note about the source code:
 <br>
+-------------------------------------------
 <br>
 The original project requirements did not include any special moves (En Passants, Castling or Promotions).
 Therefore my first idea was to focus mainly on the parsing and analysis of the moves given in algebraic chess
