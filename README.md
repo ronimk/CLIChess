@@ -79,7 +79,7 @@ will complicate a program design anyway.
 The MoveAnalysisResults-ds with a purely public interface was designed for easy passing of any relevant
 information between the parser, the move validator and the actual move maker. It (and some other parts of
 the program) may not exactly follow the best OO practices, but it's a very convenient ds and performs its duty
-very well.
+well.
 <br>
 <br>
 There are still two or three "problem areas" in the code that are desperately in need of refactoring (like changing
