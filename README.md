@@ -7,9 +7,11 @@ Tested with Microsoft Visual Studio Community 2019
 <hr>
 TODO:
 <br>
-* Update and upload the project documentation
-* If three or more pieces of the same type are able to move to the same square and they are all in a symmetrical position from the target system, one source rank specifier may not be enough to discern which piece should move. In those cases the parser, as it is now, fails. Fix that.
-* Abstract the square validity checking inside the Square class itself. This also means having to make changes to the way the parser handles source square specifications.
+<ul>
+  <li>Update and upload the project documentation</li>
+  <li>If three or more pieces of the same type are able to move to the same square and they are all in a symmetrical position from the target system, one source rank specifier may not be enough to discern which piece should move. In those cases the parser, as it is now, fails. Fix that.</li>
+  <li>Abstract the square validity checking inside the Square class itself. This also means having to make changes to the way the parser handles source square specifications.</li>
+</ul>
 <hr>
 <br>
 Due to the console-specific printing routines, the game is not portable to non-Windows platforms. 
