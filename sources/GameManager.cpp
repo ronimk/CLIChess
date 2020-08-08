@@ -578,55 +578,49 @@ bool GameManager::makeMove(std::string move) {
 	MoveAnalysisResults results;
 	results.move = move;
 
-	// Parse the given move:
 	try {
+		// Parse the given move:
 		mParser.parseNewMove(results);
 		results.opponentDir = getOpponentDirection(inTurn);
+		
+		MoveId mP = results.movedP;
+		
+		// If the move was a castling move, handle it separately:
+		if (mP == MoveId::OO || mP == MoveId::OOO) {
+			handleCastling(mP);
+		}
+		else {
+			// If the move was not a castling move, validate the source and destination
+			// squares and find all the necessary move information:
+			extractMove(results);
+		
+			// Finally, commit to it, if it can be taken:
+			if (!validateMove(results, inTurn)) {
+				lastMsg = "[" + move + "]: The move will leave you king under a check!";
+				return false;
+			}
+			else {
+				commitMove(results);
+			}
+		}
+
+		// If either the castling branch or the normal move branch was successful,
+		// finalize the move and signal success:
+		finalizeGameState(results);
+		return true;
 	}
 	catch (ParseException const& e) {
 		lastMsg = e.what();
 		return false;
 	}
-
-	// If the move was a castling move, handle it separately:
-	MoveId mP = results.movedP;
-
-	if (mP == MoveId::OO || mP == MoveId::OOO)
-		try {
-		handleCastling(mP);
-		}
-	    catch (IllegalMoveException const& e) {
-			lastMsg = e.what();
-			return false;
-	    }
-	else {
-		// If the move was not a castling move, validate the source and destination
-		// squares and find all the necessary move information:
-		try {
-			extractMove(results);
-		}
-		catch (IllegalMoveException const& e) {
-			lastMsg = "[" + move + "]: " + e.what();
-			return false;
-		}
-		catch (SquareValidationException const& e) {
-			lastMsg = "[" + move + "]: " + e.what();
-			return false;
-		}
-
-		// Finally, commit to it, if it can be taken:
-		if (!validateMove(results, inTurn)) {
-			lastMsg = "[" + move + "]: The move will leave you king under a check!";
-			return false;
-		}
-		else
-			commitMove(results);
+	catch (IllegalMoveException const& e) {
+		lastMsg = "[" + move + "]: " + e.what();
+		return false;
 	}
-
-	// If either the castling branch or the normal move branch was successful,
-	// finalize the move and signal success:
-	finalizeGameState(results);
-	return true;
+	catch (SquareValidationException const& e) {
+		lastMsg = "[" + move + "]: " + e.what();
+		return false;
+	}
 }
 
 // getErrorMsg: void -> std::string
